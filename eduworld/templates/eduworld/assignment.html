@@ -1,0 +1,127 @@
+{% extends "eduworld/layoutLOG.html" %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+
+{% block body %}
+
+  {% if message %}
+    <div class="alert alert-{{tipo}}" role="alert">
+      <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            {{ message }}
+      </div>
+  {% endif %}
+
+{% for a in assigment %}
+  <div class="container-fluid" style="padding-top:10px;">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="d-flex justify-content-center">
+                  <a  href="{% url 'classroom' a.classe_id %}" class="classe">
+                    <span class="data_menu">
+                      <i style="font-size:15px;" class="fa fa-chevron-left" aria-hidden="true"></i>
+                      <span style="font-size:18px;"> Back to class</span><br>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+              <div class="container bootstrap snippets bootdey">
+                  <div class="col-sm-8">
+                      <div class="panel panel-white post panel-shadow">
+                          <div class="post-heading">
+                                    <h6 class="text-muted time" style="font-size:15px;">Due {{a.due_date}}, {{a.due_hour}}</h6>
+                                    <h6 class="text-muted time" style="font-size:13px;">{{a.points}} points</h6>
+                                    <h6 class="text-muted time" style="text-align:center; font-size:21px;">{{a.titulo}}</h6>
+                                    <h6 class="text-muted time" style="font-size:15px; padding-top:20px;">
+                                      <span style="color:black;">{{a.descrição}}</span>
+                                    </h6>
+                            </div>
+                            <br><br>
+                            <div class="post-description">
+                              {% if a.pdf %}
+                              <form action="/media/{{a.pdf}}" target="_blank">
+                                <input class="btn btn-outline-info sm" style="float: left;" type="submit" value="View PDF" />
+                              </form>
+                              <a style="margin-left: 20px;" href="/media/{{a.pdf}}" download class="btn btn-outline-info">
+                                Download PDF</a>
+                              {% endif %}
+
+                              {% endfor %}
+
+                          </div>
+                          <hr>
+
+                          <div class="post-heading">
+                            <h6 class="text-muted time" style="font-size:15px;"><mark>Your work:</mark></h6>
+                            {% for item in status %}
+                            {% if item.pdf %}
+                              {% if item.grade %}
+                                <h6 class="text-muted time" style="font-size:13px;"> Grade: {{item.grade}} points</h6>
+                              {% else %}
+                                <h6 class="text-muted time" style="font-size:13px;"> Not yet graded</h6>
+                              {% endif %}
+                            {% endif %}
+
+                          </div>
+                        {% if item.status == 'Missed' %}
+
+                        <div class="post-description">Missed.</div>
+
+                        {% else %}
+                            {% if not item.pdf %}
+
+                            <div class="post-description">
+                              <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="file" name="updatpdf" type="submit" value="+ Add attachment" />
+                                <input class="btn btn-success sm" type="submit" value="+ Add attachment" name="salvarpdf"></input>
+                              </form>
+                          </div>
+
+                          {% else %}
+
+                          <div class="post-description">
+                            <form action="/media/{{item.pdf}}" target="_blank">
+                              <input class="btn btn-success sm" style="float: left;" type="submit" value="View Your work" />
+                            </form>
+                        </div>
+
+                          {% endif %}
+                      {% endif %}
+
+                        {% endfor %}
+                        <br><br>
+                          <div class="post-footer" id="main-content-section">
+                            {% include 'eduworld/privatecomments.html' %}
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<style>
+  .apagado
+  {
+    display:none;
+  }
+</style>
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'eduworld/classePOST.js' %}"></script>
+{% endblock %}

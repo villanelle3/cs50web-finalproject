@@ -1,0 +1,81 @@
+{% extends "eduworld/layout.html" %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+
+{% block body %}
+    {% if message %}
+    <div class="alert alert-{{tipo}}" role="alert">
+        <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <div class="divider d-flex align-items-center my-4">
+        <p class="text-center fw-bold mx-3 mb-0 grande" style="color:black;">Complete your registration</p>
+    </div>
+
+    <div class="center-screen" id="inicio">
+        <button class="btn btn-primary btn-lg button1" id="student">I'm a Student</button>
+        <button class="btn btn-primary btn-lg button1" id="teacher">I'm a Teacher</button>
+    </div>
+
+    <form action="{% url 'complete' user.id %}" method="post" style="margin-left:10%; margin-right:10%">
+        {% csrf_token %}
+        <div id="formulario">
+            <h1></h1>
+        </div>
+    </form>
+
+
+
+    <div class="divider d-flex align-items-center my-4">
+        <img src="/static/eduworld/logotipo.png" class="img-fluid pqn" alt="logo">
+    </div>
+
+    <style>
+    button.button1
+    {
+        display:inline-block;
+        padding:0.35em 1.2em;
+        margin:0 0.3em 0.3em 0;
+        border-radius:0.12em;
+        box-sizing: border-box;
+        text-decoration:none;
+        font-weight:300;
+        text-align:center;
+        transition: all 0.2s;
+        color: #fff;
+        background-color: #38b6ff;
+    }
+    button.button1:hover
+    {
+        color:#000000;
+        background-color:#FFFFFF;
+    }
+    .center-screen
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 100vh;
+    }
+    .pqn
+    {
+        width:10%;
+    }
+    @media all and (max-width:30em){
+    a.button1{
+    display:block;
+    margin:0.4em auto;
+    }
+    }
+    </style>
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'eduworld/script.js' %}"></script>
+{% endblock %}

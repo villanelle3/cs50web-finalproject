@@ -1,0 +1,84 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}EduWorld{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//cdn.materialdesignicons.com/3.7.95/css/materialdesignicons.min.css">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" />
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+
+        {% block script %}
+        {% endblock %}
+    </head>
+    <body style=" background: #f6f5f7">
+
+        <nav class="navbar navbar-expand-md navbar-light bg-faded" style="background:#fff">
+
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <img src="{% static 'eduworld/logotipo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+                Eduworld
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar5">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="navbar-collapse collapse" id="navbar5">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' user.id %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'forum' %}">Forum</a>
+                    </li>
+                </ul>
+
+                <form class="mx-2 my-auto d-inline w-100" action="{% url 'search' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input name="busca" type="text" class="form-control border border-right-0" placeholder="Search for forum posts, users and more..." autocomplete="off">
+                        <span class="input-group-append">
+                            <button class="btn btn-outline-secondary border border-left-0" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+
+                <ul class="navbar-nav">
+                    <div class="navbar-nav ms-auto">
+                        <a href="{% url 'logout' %}" class="nav-item nav-link"><i class="fa fa-sign-out" style="font-size:24px"></i></a>
+                    </div>
+                </ul>
+            </div>
+        </nav>
+
+            {% block body %}
+            {% endblock %}
+
+            {% if user.is_authenticated %}
+            <br>
+            <footer
+          class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 cor"
+          >
+          <div class="text-white mb-3 mb-md-0">
+            Copyright © 2022. All rights reserved.
+          </div>
+        </footer>
+        {% endif %}
+    </body>
+</html>

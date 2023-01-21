@@ -1,0 +1,187 @@
+{% extends "eduworld/layoutLOG.html" %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+{% block body %}
+
+{% if message %}
+  <div class="alert alert-{{tipo}}" role="alert">
+    <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+      {{ message }}
+  </div>
+{% endif %}
+
+
+<div class="container" id="pad">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+              {% for item in data %}
+              <div  id="titulooriginal" class="">
+                <p class="h2">{{item.titulo}}</p>
+              </div>
+
+              <form class="apagado" id="formtitulo">
+                    <input class="form-control" type="text" name="novocomentario" value="{{item.titulo}}" id="novotitulo" autocomplete="off">
+                    <br>
+                    <span class="input-group-addon">
+                        <button type="submit" name="salvartitlo" value="{{item.id}}" style="font-size:12px;" class="btn btn-success btn-sm btneditar">Edit</button>
+                        <button style="font-size:12px;" class="btn btn-danger btn-sm cancelar" id="cancelar">Cancel</button>
+                    </span>
+            </form>
+
+              <p><small>Asked {{item.data}} <span id="lugar"></span>{% if item.edited %}<span style="text-decoration: underline;" id="lugar1">Edited</span>{% endif %}</small></p>
+              {% if dono %}
+              <div style="text-align: rigth;">
+                <button type="button" class="btn btn-outline-secondary" id="editarmain">Edit</button>
+                &nbsp;
+                <form method="post" action="{% url 'forumquestion' pk %}" style="display: inline-block;">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-outline-danger" value="Delete"></input>
+              </form>
+              </div>
+              {% endif %}
+              <hr>
+              <div class="container-md mt-3 border">
+                <div  id="textooriginal" class="">
+                  <p style="padding-bottom:20px;">{{item.post_text | safe}}</p>
+                </div>
+
+                <figcaption class="blockquote-footer">
+                  Asked by <cite title="Source Title">{{autor}}</cite>
+                </figcaption>
+              </div>
+              <hr>
+              <p class="h5">{{item.reply_count}} Answer{{ item.reply_count|pluralize }}</p>
+              {% endfor %}
+<!--------------------------------------------------ANSWERS-------------------------------------------------------------------------------------->
+<div class="container">
+  <div class="d-flex justify-content-center row">
+      <div class="d-flex flex-column">
+          <div class="coment-bottom bg-white p-2 px-4">
+              <div class="commented-section mt-2">
+                  <div class="d-flex flex-row align-items-center commented-user">
+              </div>
+      {% if replies %}
+      {% for reply in replies %}
+      <!------------------------------------------------------------------START----------------------------------------------------------------->
+      <div class="commented-section mt-2" style="background-color:#F5F5F5;">
+
+          <div class="d-flex flex-row align-items-center commented-user" style="padding:15px;">
+              <h5 class="mr-2">{{reply.dono__username}}</h5>
+              <span class="dot mb-1"></span>
+              <span class="mb-1 ml-2">{{reply.data}}</span>
+          </div>
+
+          <div class="comment-text-sm" style="padding:15px;">
+            <span>
+               {{reply.texto | safe }}
+            </span>
+          </div>
+
+          <div class="reply-section" style="padding:15px;">
+              <div class="d-flex flex-row align-items-center voting-icons">
+                <!-- likedseta -->
+                {% if reply.id in already_liked %}
+                  <button id="like-{{reply.id}}" class="likedislike likou" value="{{reply.id}}"><i class="fa fa-sort-up fa-2x mt-3 hit-voting likedseta" id="likeseta-{{reply.id}}"></i></button>
+                {% else %}
+                 <button id="like-{{reply.id}}" class="likedislike likou" value="{{reply.id}}"><i class="fa fa-sort-up fa-2x mt-3 hit-voting" id="likeseta-{{reply.id}}"></i></button>
+                {% endif %}
+                <button id="dislike-{{reply.id}}" class="likedislike dislike" value="{{reply.id}}"><i class="fa fa-sort-down fa-2x mb-3 hit-voting" id="dislikeseta-{{reply.id}}"></i></button>
+                <span class="ml-2" id="total-{{reply.id}}">{{reply.like_count}}</span>
+              </div>
+        </div>
+      </div>
+      <br>
+      <!------------------------------------------------------------------END----------------------------------------------------------------->
+      {% endfor %}
+      {% endif %}
+</div>
+</div>
+</div>
+</div>
+<!--------------------------------------------------ANSWERS FIM---------------------------------------------------------------------------------->
+<!-------------------------------------------------------------------------------------------------------------------------------------------->
+                <form method="post" action="{% url 'newformreply' pk %}" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <label class="h5">Your Answer</label>
+                  {{ form.media }}
+                  {{ form.as_p }}
+                  <input type="submit" class="btn btn-primary" id="rsp" value="Post your answer"></input>
+                </form>
+<!---------------------------------------------------------------------------------------------------------------------------------------------->
+            </div>
+          </div>
+        </div>
+     </div>
+</div>
+</div>
+
+<style>
+  .apagado
+  {
+    display:none;
+  }
+</style>
+
+<script>
+      $('#editarmain').click(function (e){
+        e.preventDefault();
+        let formtitulo = document.getElementById('formtitulo')
+        let titulooriginal = document.getElementById('titulooriginal')
+        formtitulo.classList.remove("apagado");
+        titulooriginal.classList.add("apagado");
+    })
+    $('#cancelar').click(function (e){
+        e.preventDefault();
+        let formtitulo = document.getElementById('formtitulo')
+        let titulooriginal = document.getElementById('titulooriginal')
+        formtitulo.classList.add("apagado");
+        titulooriginal.classList.remove("apagado");
+    })
+
+    $('.btneditar').click(function (e){
+        e.preventDefault();
+
+        let novotitulo = $(`#novotitulo`).val();
+        console.log(novotitulo); // novo comentario
+
+        let id = this.value;
+        console.log(id); // id
+
+        $.ajax({
+            type: 'POST',
+            url: `/edittitulo`,
+            data: {
+                postid: id,
+                novotitulo: novotitulo,
+                action: 'post'
+            },
+
+            success: function(){
+                console.log('oka')
+                let formtitulo = document.getElementById('formtitulo')
+                let titulooriginal = document.getElementById('titulooriginal')
+                formtitulo.classList.add("apagado");
+                titulooriginal.classList.remove("apagado");
+                titulooriginal.innerHTML = `<p class="h2">${novotitulo}</p>`
+                let lugar1 = document.getElementById('lugar1')
+                lugar1.classList.add("apagado");
+                let lugar = document.getElementById('lugar')
+                lugar.innerHTML = '<span style="text-decoration: underline;">Edited</span>'
+            }
+        });
+
+    })
+
+</script>
+
+{% endblock %}
+
+
+{% block script %}
+    <script src="{% static 'eduworld/forumajax.js' %}"></script>
+{% endblock %}

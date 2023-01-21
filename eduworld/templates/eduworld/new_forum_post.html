@@ -1,0 +1,48 @@
+<div class="modal fade" id="modalContactForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document" style="width: 900px;">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Ask Question</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{% url 'forum' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body mx-3">
+            <div class="md-form mb-5">
+              <label data-error="wrong" data-success="right" for="form34">Title</label>
+              <input type="text" id="form34" class="form-control validate" style="width: 830px;" name="titulo" required autocomplete="off">
+              <label style="color:gray;" data-error="wrong" data-success="right" for="form34">Be specific and imagine you're asking a question to another person.</label>
+            </div>
+
+            <div class="md-form mb-5">
+              <label data-error="wrong" data-success="right" for="form32">Category</label>
+              <select class="form-control form-control-lg bg-white bg-op-9 text-sm" data-toggle="select" tabindex="-98" style="width: 830px;" name="category" >
+                <option disabled selected="selected">Select...</option>
+                <option> Languages </option>
+                <option> Mathematics </option>
+                <option> Natural Sciences </option>
+                <option> Social Sciences </option>
+                <option> Technology </option>
+                <option> Economic and Management Sciences </option>
+                <option> Creative Arts </option>
+                <option> Orientation </option>
+              </select>
+            </div>
+
+            <div class="md-form mb-5">
+                {{ form.media }}
+                {{ form.as_p }}
+                <label style="color:gray;" data-error="wrong" data-success="right" for="form34">Introduce the problem and expand on what you put in the title.</label>
+            </div>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button class="btn btn-success">Send <i class="mdi mdi-checkbox-marked-outline"></i></button>
+          </div>
+
+      </form>
+    </div>
+  </div>
+</div>

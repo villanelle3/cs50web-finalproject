@@ -1,0 +1,316 @@
+{% extends "eduworld/layoutLOG.html" %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+{% block body %}
+
+<div class="container" id="pad">
+            <div class="row">
+            <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                {% if NOT_FOUND %}
+                    <img alt ="404" id="not_found" src="https://www.artzstudio.com/content/images/wordpress/2020/05/404-error-not-found-page-lost.png">
+                </div></div></div></div></div>
+                {% else %}
+                    <div class="tab-content no-border padding-24">
+                        <div id="home" class="tab-pane in active">
+                        <div class="row">
+
+                            <div class="col-xs-12 col-sm-3 center">
+                              {% for complemento in complementos %}
+                                <span class="profile-picture">
+                                {% if complemento.foto %}
+                                    <img alt="Avatar" id="avatar2" src="/media/{{loc}}" class="img-med rounded-circle mb-3" style="clip-path: circle(50%);">
+                                {% else %}
+                                <!--  school/media/images/image-asset.png  -->
+                                    <img alt="Avatar" id="avatar2" src="https://icon-library.com/images/no-user-image-icon/no-user-image-icon-27.jpg" class="img-med rounded-circle mb-3">
+                                {% endif %}
+                                </span>
+                              {% endfor %}
+                            </div>
+                            <div class="col-xs-12 col-sm-9">
+                                {% for item in data %}
+                                    {% if type_of_user == 'prof' %}
+                                        <h4><span class="middle">{{item.call}} {{item.name}} {{item.last_name}}</span></h4>
+                                    {% else %}
+                                        <h4><span class="middle">{{item.name}} {{item.last_name}}</span></h4>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if type_of_user == 'prof' %}
+                                  <h4 class="mb-0 mr-2 text-muted pqn">Teacher</h4>
+                                {% else %}
+                                  <h4 class="mb-0 mr-2 text-muted pqn">Student</h4>
+                                  {% for item in data %}
+                                    <h4 class="mb-0 mr-2 text-muted pqn">{{item.school}}</h4>
+                                  {% endfor %}
+                                {% endif %}
+                                <hr>
+                                <div class="d-flex" style="padding-top:15px;">
+                                  {% for complemento in complementos %}
+                                    {% if type_of_user == 'prof' %}
+                                        <h6 style="text-align:center; padding-right:35px; font-size:.95em;"><span style="color:#38b6ff;">{{complemento.classmates_number}}</span><br>Students</h6>
+                                        <h6 style="text-align:center; padding-right:35px; font-size:.95em;"><span style="color:#38b6ff;">{{complemento.connections_number}}</span><br>Teacher<br>Connections</h6>
+                                        <h6 style="text-align:center; padding-right:35px; font-size:.95em;"><span style="color:#38b6ff;">{{complemento.library_itens_number}}</span><br>Library<br>Items</h6>
+                                        <h6 style="text-align:center; padding-right:35px; font-size:.95em;"><span style="color:#38b6ff;">{{complemento.saring_score}}</span><br>Sharing<br>Score</h6>
+                                    {% else %}
+                                        <h6 style="text-align:center; padding-right:35px; font-size:.95em;"><span style="color:#38b6ff;">{{complemento.classmates_number}}</span><br>Classmates</h6>
+                                        <h6 style="text-align:center; padding-right:35px; font-size:.95em;"><span style="color:#38b6ff;">{{complemento.connections_number}}</span><br>Connections</h6>
+                                        <h6 style="text-align:center; padding-right:35px; font-size:.95em;"><span style="color:#38b6ff;">{{complemento.library_itens_number}}</span><br>Library<br>Items</h6>
+                                        <h6 style="text-align:center; padding-right:35px; font-size:.95em;"><span style="color:#38b6ff;">{{complemento.saring_score}}</span><br>Sharing<br>Score</h6>
+                                    {% endif %}
+                                  {% endfor %}
+                                </div>
+                                <div class="d-flex" style="padding-top:15px;">
+                                    {% if DONO %}
+                                        <button type="button" class="slide medio">
+                                            <div><a href="{% url 'edit' pk %}" class="edite">Edit Profile</a></div>
+                                            <i class="icon-arrow-right"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container" id="pad">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-4">
+                    <div class="border-bottom text-center pb-4">
+
+                        <div class="py-4">
+
+                          <p class="clearfix">
+                              <span class="float-left">
+                                  <button type="button" class="slide medio ativo" id="perfilcompleto">
+                                      <div>Profile Overview</div>
+                                      <i class="icon-arrow-right"></i>
+                                  </button>
+                              </span>
+                            </p>
+
+                            <p class="clearfix">
+                              <span class="float-left">
+                                  <button type="button" class="slide medio" id="comunidades">
+                                      <div>Communities</div>
+                                      <i class="icon-arrow-right"></i>
+                                  </button>
+                              </span>
+                            </p>
+
+
+                          </div>
+
+                        </div>
+
+                      {% for item in complementos %}
+                        <div class="mb-3">
+                          {% if type_of_user == 'prof' %}
+                            <div class="d-flex align-items-center justify-content-center">
+                              <h5 class="mb-0 mr-2 text-muted pqn">{{item.classmates_number}} Students</h5>
+                              <br><br>
+                            </div>
+                          {% else %}
+                            <div class="d-flex align-items-center justify-content-center">
+                              <h5 class="mb-0 mr-2 text-muted pqn">{{item.classmates_number}} Classmates</h5>
+                            </div>
+                          {% endif %}
+                        </div>
+                      {% endfor %}
+
+                      <div class="d-flex justify-content-center"> <!-- no maximo 4 -->
+                        {% if friend_info %}
+                        {% for foto, id in friend_info %}
+                          <div style="padding-left:8px;">
+                            <a href="{% url 'profile' id %}">
+                              {% if foto %}
+                                <img src="/media/{{foto}}" alt="profile" class="img-med rounded-circle mb-3" style="width: 45px; height: 45px;">
+                              {% else %}
+                                <img src="https://icon-library.com/images/no-user-image-icon/no-user-image-icon-27.jpg" alt="profile" class="img-med rounded-circle mb-3" style="width: 45px; height: 45px;">
+                              {% endif %}
+                              </a>
+                            </div>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+
+                      <div class="d-flex justify-content-center">
+                        <button type="button" class="slide medio" id="ShowAllConnections">
+                            <div>Show All</div>
+                            <i class="icon-arrow-right"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                  <div class="col-lg-8" id="profile_overview">
+
+                    <div class="mt-4 py-2 border-top border-bottom">
+                      <ul class="nav profile-navbar">
+                        {% for item in data %}
+                            {% if type_of_user == 'prof' %}
+                                <h5 class="init" style="text-align: center;">About {{item.call}} {{item.name}} {{item.last_name}}</h5>
+                            {% else %}
+                                <h5 class="init" style="text-align: center;">About {{item.name}} {{item.last_name}}</h5>
+                            {% endif %}
+                        {% endfor %}
+                      </ul>
+                    </div>
+
+                    <div class="ml-4">
+                      {% for complemento in complementos %}
+                        <p class="interno">
+                          {% if complemento.bio %}
+                            {{complemento.bio}}
+                          {% else %}
+                            No bio yet!
+                          {% endif %}
+                        </p>
+                      {% endfor %}
+                    </div>
+
+                    <div class="col-lg-8">
+
+                        <div class="mt-4 py-2 border-top border-bottom">
+                          <ul class="nav profile-navbar">
+                            <h5 class="init" style="text-align: center;">Achievements</h5>
+                          </ul>
+                        </div>
+
+                        {% for foto, tit, desc in arch %}
+                              <div class="ml-4">
+                                <p class="interno">
+                                    <span><img src="/media/{{foto}}" alt="Achievement" class="img-med rounded-circle mb-3" style="width: 50px; height: 50px;">&nbsp; &nbsp;</span> {{tit}}: {{desc}}
+                                </p>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8" id="comu" style="display:none;">
+                    <div class="mt-4 py-2 border-top border-bottom">
+                      <ul class="nav profile-navbar">
+                        <h5 class="init" style="text-align: center;">Communities</h5>
+                      </ul>
+                    </div>
+                    PARA FAZER
+                  </div>
+
+
+                  <div class="col-lg-8" id="amigos" style="display:none;">
+                    <div class="mt-4 py-2 border-top border-bottom">
+                      <ul class="nav profile-navbar">
+                        {% if type_of_user == 'prof' %}
+                          <h5 class="init" style="text-align: center;">Connections</h5>
+                        {% else %}
+                          <h5 class="init" style="text-align: center;">Classmates</h5>
+                        {% endif %}
+                      </ul>
+                    </div>
+
+                    <br>
+                    <div class="container">
+
+                      <div class="friend-list">
+                        <div class="row">
+
+                          {% for foto, id, name in perfis %}
+                            <div class="col-md-4 col-sm-6">
+                              <div class="friend-card">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ53uK21CI0qWZZvIilQwB6FXj-7Xtfz0dyNb56mWwl_mQi4KhMtTT8n1-ix5_xgLV-Fik&usqp=CAU" alt="profile-cover" class="img-responsive cover">                                  <div class="card-info">
+                                  {% if foto %}
+                                  <img src="/media/{{foto}}" alt="user" class="profile-photo-lg">
+                                  {% else %}
+                                  <img src="https://icon-library.com/images/no-user-image-icon/no-user-image-icon-27.jpg" alt="user" class="profile-photo-lg">
+                                  {% endif %}
+                                  <div class="friend-info">
+                                    <h5><a href="{% url 'profile' id %}" class="edite2">{{name}}</a></h5>
+                                    <p>Student</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          {% endfor %}
+
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+<style>
+  .ativo
+  {
+    background: #38b6ff;
+  }
+</style>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function ()
+  {
+    document.querySelector('#perfilcompleto').addEventListener('click', () => mostrar('perfilcompleto'));
+    document.querySelector('#comunidades').addEventListener('click', () => mostrar('comunidades'));
+    document.querySelector('#ShowAllConnections').addEventListener('click', () => mostrar('ShowAllConnections'));
+  });
+
+  function mostrar(item)
+  {
+    if (item == 'comunidades')
+    {
+      document.getElementById("comunidades").classList.add("ativo");
+      document.getElementById("perfilcompleto").classList.remove("ativo");
+      document.getElementById("ShowAllConnections").classList.remove("ativo");
+
+      document.getElementById('comu').style.display = 'block';
+      document.getElementById('profile_overview').style.display = 'none';
+      document.getElementById('amigos').style.display = 'none';
+    }
+    else if(item == 'perfilcompleto')
+    {
+      document.getElementById("comunidades").classList.remove("ativo");
+      document.getElementById("ShowAllConnections").classList.remove("ativo");
+      document.getElementById("perfilcompleto").classList.add("ativo");
+
+      document.getElementById('profile_overview').style.display = 'block';
+      document.getElementById('comu').style.display = 'none';
+      document.getElementById('amigos').style.display = 'none';
+    }
+    else
+    {
+      document.getElementById("comunidades").classList.remove("ativo");
+      document.getElementById("ShowAllConnections").classList.add("ativo");
+      document.getElementById("perfilcompleto").classList.remove("ativo");
+
+      document.getElementById('profile_overview').style.display = 'none';
+      document.getElementById('comu').style.display = 'none';
+      document.getElementById('amigos').style.display = 'block';
+    }
+  }
+
+
+</script>
+
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'eduworld/script.js' %}"></script>
+{% endblock %}

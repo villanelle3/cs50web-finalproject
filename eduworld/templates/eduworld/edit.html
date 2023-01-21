@@ -1,0 +1,133 @@
+{% extends "eduworld/layoutLOG.html" %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+{% block body %}
+
+{% if message %}
+    <div class="alert alert-{{tipo}}" role="alert">
+        <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+{% endif %}
+
+{% if DONO %}
+<div class="container-xl px-4 mt-4" style="margin-top:20px;">
+    <div class="row">
+        <div class="col-xl-4">
+            <!-- Profile picture card-->
+            <div class="card mb-4 mb-xl-0">
+                <div class="card-header">Profile Picture</div>
+                <div class="card-body text-center">
+                    <!-- Profile picture image-->
+                    {% if loc %}
+                        <img class="img-account-profile rounded-circle mb-2" src="/media/{{loc}}" alt="">
+                    {% else %}
+                        <img class="img-account-profile rounded-circle mb-2" src="https://icon-library.com/images/no-user-image-icon/no-user-image-icon-27.jpg" alt="">
+                    {% endif %}
+                    <!-- Profile picture help block-->
+                    <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                    <!-- Profile picture upload button-->
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" value="Upload new image" name="updateimagem" style="font-size:12px;"></input>
+                        <br>
+                        <input class="btn btn-primary" type="submit" value="Upload new image" name="salvarimagem"></input>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <!-- Account details card-->
+            <div class="card mb-4">
+                <div class="card-header">Account Details</div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'edit' user.id %}">
+                        {% csrf_token %}
+
+                        {% for geral in gerais %}
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (first name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputFirstName">First name</label>
+                                <input required name="first_name" class="form-control" id="inputFirstName" type="text" placeholder="First name" value="{{geral.name}}">
+                            </div>
+                            <!-- Form Group (last name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputLastName">Last name</label>
+                                <input required name="last_name" class="form-control" id="inputLastName" type="text" placeholder="Last name" value="{{geral.last_name}}">
+                            </div>
+                        </div>
+                        {% if type_of_user == 'student' %}
+                        <!-- Form Row        -->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (organization name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputOrgName">School</label>
+                                <input required name="school" class="form-control" id="inputOrgName" type="text" placeholder="School name" value="{{geral.school}}">
+                            </div>
+                            <!-- Form Group (location)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputLocation">Education</label>
+                                <select required class="form-control" id="jj" name="education">
+                                    <option selected style="color:gray;">{{geral.level}}</option>
+                                    <option value="Primary [elementary] School">Primary [elementary] School</option>
+                                    <option value="Midle School">Midle School</option>
+                                    <option value="Secondary [high] School">Secondary [high] School</option>
+                                    <option value="Postsecondary [tertiary] Education">Postsecondary [tertiary] Education</option>
+                                  </select>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="row gx-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="inputLocation">Title</label>
+                            <select required class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="titulo">
+                                <option selected style="color:gray;">{{geral.call}}</option>
+                                <option value="Miss">Miss</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Dr.">Dr.</option>
+                                <option value="Professor">Professor</option>
+                              </select>
+                        </div>
+                    </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% for comp in comps %}
+                        <!-- Form Group (bio)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="inputEmailAddress">Bio</label>
+                            <textarea name="bio" class="form-control" id="inputEmailAddress" type="text">{{comp.bio}}</textarea>
+                        </div>
+                        {% endfor %}
+                        <!-- Save changes button-->
+                        <input class="btn btn-primary" type="submit" value="Save changes" name="salvar"></input>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="container" id="pad">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <img alt ="404" id="not_found" src="https://stories.freepiklabs.com/storage/42261/403-error-forbidden-rafiki-2844.png">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'eduworld/script.js' %}"></script>
+{% endblock %}

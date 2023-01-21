@@ -1,0 +1,170 @@
+{% extends "eduworld/layoutLOG.html" %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+{% block body %}
+
+{% if message %}
+  <div class="alert alert-{{tipo}}" role="alert">
+    <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+      {{ message }}
+  </div>
+{% endif %}
+
+
+<div class="container" id="pad">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+                  <p class="h4">
+                    Results for
+                    <small class="text-muted">{{busca}}...</small>
+                  </p>
+<!------------------------------------------------------------------------------------------------------------>
+<div class="container" style="padding-top:20px;">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card ccard radius-t-0 h-100">
+                <div class="position-tl w-102 border-t-3 brc-primary-tp3 ml-n1px mt-n1px"></div>
+                <!-- the blue line on top -->
+
+                <div class="card-header pb-3 brc-secondary-l3">
+                    <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+                        Students
+                    </h5>
+                </div>
+
+                <div class="card-body pt-2 pb-1">
+
+                  <!--------------------------------------------------------------->
+                  {% if ALUNOS_INFO %}
+                  {% for nome, id, foto in ALUNOS_INFO %}
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                          {% if foto %}
+                          <img alt="{{nome}}'s avatar" src="/media/{{foto}}" class="h-4 w-4" />
+                          {% else %}
+                          <img alt="{{nome}}'s avatar" src="https://icon-library.com/images/no-user-image-icon/no-user-image-icon-27.jpg" class="h-4 w-4" />
+                          {% endif %}
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                            {{nome}}
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                            <a href="{% url 'profile' id %}" class="text-80" style="color:black;">
+                                Profile Page
+                            </a>
+                        </span>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                      No results...
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-md-5">
+            <div class="card ccard radius-t-0 h-100">
+                <div class="position-tl w-102 border-t-3 brc-primary-tp3 ml-n1px mt-n1px"></div>
+                <!-- the blue line on top -->
+
+                <div class="card-header pb-3 brc-secondary-l3">
+                    <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+                        Teachers
+                    </h5>
+                </div>
+
+                <div class="card-body pt-2 pb-1">
+                  {% if PROFS_INFO %}
+                  {% for nome, id, foto in PROFS_INFO %}
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                          {% if foto %}
+                          <img alt="{{nome}}'s avatar" src="/media/{{foto}}" class="h-4 w-4" />
+                          {% else %}
+                          <img alt="{{nome}}'s avatar" src="https://icon-library.com/images/no-user-image-icon/no-user-image-icon-27.jpg" class="h-4 w-4" />
+                          {% endif %}
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                          {{nome}}
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                          <a href="{% url 'profile' id %}" class="text-80" style="color:black;">
+                              Profile Page
+                          </a>
+                      </span>
+                  </div>
+                    {% endfor %}
+                    {% else %}
+                      No results...
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!------------------------------------------------------------------------------------------------------------>
+
+<!------------------------------------------------------------------------------------------------------------>
+<div class="container" style="padding-top:30px;">
+  <div class="row">
+      <div class="col-md-5">
+          <div class="card ccard radius-t-0 h-100">
+              <div class="position-tl w-102 border-t-3 brc-primary-tp3 ml-n1px mt-n1px"></div>
+              <!-- the blue line on top -->
+
+              <div class="card-header pb-3 brc-secondary-l3">
+                  <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+                      Forum posts
+                  </h5>
+              </div>
+
+              <div class="card-body pt-2 pb-1">
+                  {% if GROUPS_INFO %}
+                  {% for nome, id in GROUPS_INFO %}
+                  <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+
+
+                    <span class="text-default-d3 text-90 text-600">
+                      {{nome}}
+                    </span>
+
+                    <span class="ml-auto text-dark-l2 text-nowrap">
+                      <a href="{% url 'forumquestion' id %}" class="text-80" style="color:black;">
+                          See more
+                      </a>
+                  </span>
+              </div>
+                  {% endfor %}
+                  {% else %}
+                      No results...
+                  {% endif %}
+
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<!------------------------------------------------------------------------------------------------------------>
+
+            </div>
+          </div>
+        </div>
+     </div>
+</div>
+
+
+
+
+
+{% endblock %}
+

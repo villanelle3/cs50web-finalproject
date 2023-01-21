@@ -1,0 +1,258 @@
+<form class="privateComment" id='myForm'>
+    <div class="input-group">
+        <input class="form-control" placeholder="Add a private comment" type="text" name="comentario" autocomplete="off" id="novocomentario">
+        <span class="input-group-addon">
+            <button type="submit" name="cmtprivate" id="cmtprivate"><i class="fa fa-edit" style="font-size:20px;"></i></button>
+            <div class="apagado" id="pk">{{pk}}</div>
+        </span>
+    </div>
+</form>
+
+<ul class="comments-list">
+
+    <div id="NEWCOMMENTS"></div>
+
+    {% if comments %}
+    {% for comment in comments %}
+    <!-- BLOCK COMMENT -->
+      <li class="comment">
+        <!-- comment start -->
+          <div class="pull-left">
+              <img class="avatar" src="/media/{{foto}}" alt="avatar">
+          </div>
+          <div class="comment-body">
+              <div class="comment-heading">
+                  <h4 class="user">{{nome}}</h4>
+                  <h5 class="time">{{comment.data}}&nbsp;&nbsp;<span style="color:green; text-decoration:underline;" class="apagado" id="{{comment.id}}-info"><strong>Edited just now!</strong></span></h5>
+              </div>
+
+              <form class="privateComment apagado" id="{{comment.id}}-formulario">
+                <div class="input-group">
+                    <input class="form-control" type="text" name="novocomentario" value="{{comment.texto}}" autofocus id="{{comment.id}}-novocomentario" autocomplete="off">
+                    <span class="input-group-addon">
+                        <button type="submit" value="{{comment.id}}" name="cmtprivate"  style="font-size:12px;" class="btn btn-success btn-sm btneditar">Edit</button>
+                        <button style="font-size:12px;" class="btn btn-danger btn-sm cancelar" value="{{comment.id}}" id="{{comment.id}}-cancelar">Cancel</button>
+                    </span>
+                </div>
+            </form>
+
+              <p class="commentbody" id="{{comment.id}}-comentario">{{comment.texto}}</p>
+
+              <form method="post" action="{% url 'assignment' pk %}" style="float: left;" id="{{comment.id}}-deletebtn">
+                {% csrf_token %}
+                <button type="submit" style="color:gray;" name="deletar" value="{{comment.id}}" class="deletar">Delete</button>
+              </form>
+              <div  style="margin-left: 20px; float: left;" id="{{comment.id}}-branco">
+                &nbsp;
+              </div>
+
+              <form method="" action="" id="{{comment.id}}-edit">
+                <button type="submit" style="color:gray;" name="editar" value="{{comment.id}}" class="editar" data-sid="">Edit</button>
+              </form>
+
+          </div>
+          <!-- comment end -->
+          {% if comment.has_reply %}
+
+          {% for reply in replies %}
+          {% if reply.coment_inicial_id == comment.id %}
+          <div class="media-block" style="padding-top:10px;" id="resposta-{{reply.id}}">
+            <div class="media-body">
+                <div class="comment-heading" id="heading-{{reply.id}}">
+                    <h4 class="user">Teacher Reply:</h4>
+                    <h5 class="time">&nbsp;&nbsp;{{reply.data}}<span style="color:green; text-decoration:underline;" class="apagado"></span></h5>
+                </div>
+              <p id="texto-{{reply.id}}">{{reply.texto}}</p>
+              <hr>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+
+          {% endif %}
+      </li>
+      <!-- BLOCK COMMENT -->
+      {% endfor %}
+      {% endif %}
+</ul>
+
+<script>
+
+    var c = document.querySelectorAll(".editar");
+    var cancelar = document.querySelectorAll(".cancelar");
+
+    c.forEach(function(cm){
+        cm.addEventListener('click', function(e) {
+            e.preventDefault();
+            // alert(this.value) // aqui vem o id do post
+            let formulario = document.getElementById(`${this.value}-formulario`)
+            let comentario = document.getElementById(`${this.value}-comentario`)
+
+            let edit = document.getElementById(`${this.value}-edit`)
+            let deletebtn = document.getElementById(`${this.value}-deletebtn`)
+            let branco = document.getElementById(`${this.value}-branco`)
+
+            comentario.classList.add("apagado");
+            formulario.classList.remove("apagado");
+
+            edit.classList.add("apagado");
+            deletebtn.classList.add("apagado");
+            branco.classList.add("apagado");
+
+            });
+    });
+
+    cancelar.forEach(function(cm){
+        cm.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            let canc = document.getElementById(`${this.value}-cancelar`)
+            let formulario = document.getElementById(`${this.value}-formulario`)
+            let edit = document.getElementById(`${this.value}-edit`)
+            let deletebtn = document.getElementById(`${this.value}-deletebtn`)
+            let branco = document.getElementById(`${this.value}-branco`)
+            let comentario = document.getElementById(`${this.value}-comentario`)
+
+
+           edit.classList.remove("apagado");
+           deletebtn.classList.remove("apagado");
+           branco.classList.remove("apagado");
+           comentario.classList.remove("apagado");
+           formulario.classList.add("apagado");
+
+            });
+    });
+
+
+    $('.btneditar').click(function (e){
+        e.preventDefault();
+        console.log(this.value); // id do post a ser editado
+        let comentario = document.getElementById(`${this.value}-comentario`)
+        console.log(comentario.innerHTML); // antigo comentario
+
+        let novocomentario = $(`#${this.value}-novocomentario`).val();
+        console.log(novocomentario); // novo comentario
+
+        let id = this.value;
+
+        $.ajax({
+            type: 'POST',
+            url: `/editcomment`,
+            data: {
+                postid: id,
+                novocomentario: novocomentario,
+                action: 'post'
+            },
+
+            success: function(){
+                console.log('oka')
+
+                let formulario = document.getElementById(`${id}-formulario`)
+                let comentario = document.getElementById(`${id}-comentario`)
+
+                comentario.innerHTML = novocomentario
+                comentario.classList.remove("apagado");
+
+                formulario.classList.add("apagado");
+
+                let edit = document.getElementById(`${id}-edit`)
+                let deletebtn = document.getElementById(`${id}-deletebtn`)
+                let branco = document.getElementById(`${id}-branco`)
+
+                edit.classList.remove("apagado");
+                branco.classList.remove("apagado");
+                deletebtn.classList.remove("apagado");
+
+                let info = document.getElementById(`${id}-info`)
+                info.classList.remove("apagado");
+
+                setTimeout(function () {
+                    info.classList.add("apagado");
+                    }, 10000);
+            }
+        });
+    })
+
+
+    $('#cmtprivate').click(function (e){
+        e.preventDefault();
+        output ="";
+        let novocomentario = $(`#novocomentario`).val();
+        console.log(novocomentario); // novo comentario
+
+        var value = document.getElementById("pk").innerHTML;
+
+        var peca = pk.innerHTML
+
+        console.log(peca)
+
+        $.ajax({
+            type: 'POST',
+            url: `/addnewcomment`,
+            data: {
+                pk: parseInt(peca),
+                comentario: novocomentario,
+                action: 'post'
+            },
+
+            success: function(data){
+                console.log('oka')
+                foto = data.foto
+                nome = data.nome
+                x = data.comendata
+                day = data.day
+                if(data.status == 'saved')
+                {
+                    var linha = document.createElement('div');
+                    linha.innerHTML = `
+                        <li class="comment">
+                            <div class="pull-left">
+                                <img class="avatar" src="/media/${foto}" alt="avatar">
+                            </div>
+                            <div class="comment-body">
+                                <div class="comment-heading">
+                                    <h4 class="user">${nome}</h4>
+                                    <h5 class="time">${day}&nbsp;&nbsp;<span style="color:green; text-decoration:underline;" class="apagado" id="${x[0].id}-info"><strong>Edited just now!</strong></span></h5>
+                                </div>
+
+                                <form class="privateComment apagado" id="${x[0].id}-formulario">
+                                    <div class="input-group">
+                                        <input class="form-control" type="text" name="novocomentario" value="${x[0].texto}" autofocus id="${x[0].id}-novocomentario" autocomplete="off">
+                                        <span class="input-group-addon">
+                                            <button type="submit" value="${x[0].id}" name="cmtprivate"  style="font-size:12px;" class="btn btn-success btn-sm btneditar">Edit</button>
+                                            <button style="font-size:12px;" class="btn btn-danger btn-sm cancelar" value="${x[0].id}" id="${x[0].id}-cancelar">Cancel</button>
+                                        </span>
+                                    </div>
+                                </form>
+
+                                <p class="commentbody" id="${x[0].id}-comentario">${x[0].texto}</p>
+
+                                <form method="post" action="assignment/${x[0].atividade_id}" style="float: left;" id="${x[0].id}-deletebtn">
+                                    {% csrf_token %}
+                                    <button type="submit" style="color:gray;" name="deletar" value="${x[0].id}" class="deletar">Delete</button>
+                                </form>
+                                <div  style="margin-left: 20px; float: left;" id="${x[0].id}-branco">
+                                    &nbsp;
+                                </div>
+
+                                <form method="" action="" id="${x[0].id}-edit">
+                                    <button type="submit" style="color:gray;" name="editar" value="${x[0].id}" class="editar" data-sid="">Edit</button>
+                                </form>
+
+                            </div>
+                        </li>
+                                        `;
+                    var element = document.getElementById("NEWCOMMENTS");
+                    element.insertBefore(linha, element.firstChild);
+                    $('#myForm')[0].reset();
+
+                }
+
+            }
+        });
+
+    })
+
+
+</script>
+

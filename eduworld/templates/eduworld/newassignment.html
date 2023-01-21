@@ -1,0 +1,238 @@
+{% extends "eduworld/layoutLOG.html" %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+
+{% block body %}
+
+  {% if message %}
+    <div class="alert alert-{{tipo}}" role="alert">
+      <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            {{ message }}
+      </div>
+  {% endif %}
+
+
+  <div class="container-fluid" style="padding-top:10px;">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="d-flex justify-content-center">
+                {% for a in assigment %}
+                  <a  href="{% url 'classroom' a.classe_id %}" class="classe">
+                {% endfor %}
+                    <span class="data_menu">
+                      <i style="font-size:15px;" class="fa fa-chevron-left" aria-hidden="true"></i>
+                      <span style="font-size:18px;"> Back to class</span><br>
+                    </span>
+                  </a>
+
+                </div>
+              </div>
+            </div>
+
+
+              <div class="container bootstrap snippets bootdey">
+                  <div class="col-sm-8">
+                    <div class="mt-4 py-2 border-top border-bottom">
+                        <ul class="nav profile-navbar" id="navi">
+                          <li class="nav-item">
+                            <a class="nav-link" id="Stream" style="cursor:pointer;">
+                              <i class="mdi mdi-calendar"></i>
+                              Instructions
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link active" id="Classwork" style="cursor:pointer;">
+                              <i class="mdi mdi-newspaper"></i>
+                              Student Work
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <div class="panel panel-white post panel-shadow">
+                        {% for a in assigment %}
+                            <div class="post-heading apagado" id="heading-description"> <!-- 1 1 1 1 1 1 1 1 1 1 1 -->
+                                <button class="text-muted time editarbtn" style="text-align:right;" id="editarbtn">Edit <i class="mdi mdi-tooltip-edit"></i></button>
+                                <h6 class="text-muted time" style="font-size:15px; padding-top:17px;">Due {{a.due_date}}, {{a.due_hour}}</h6>
+                                <h6 class="text-muted time" style="font-size:13px;">{{a.points}} points</h6>
+                                <h6 class="text-muted time" style="text-align:center; font-size:21px;" id="entrada1">{{a.titulo}}</h6>
+
+                                <form id="editform" class="apagado">
+                                  <div class="input-group">
+                                    <input class="form-control" type="text" name="titulo" autofocus autocomplete="off" value="{{a.titulo}}" id="t">
+                                    <br>
+                                    <input class="form-control" type="text" name="desc" autofocus autocomplete="off" value="{{a.descrição}}" id="d">
+                                    <span class="input-group-addon">
+                                      <button type="submit" value="{{pk}}" name="cmtprivate"  style="font-size:12px;" class="btn btn-success btn-sm" id="btneditar">Edit</button>
+                                      <button style="font-size:12px;" class="btn btn-danger btn-sm" value="{{pk}}" id="cancelar">Cancel</button>
+                                    </span>
+                                  </div>
+                                </form>
+
+                                <h6 class="text-muted time" style="font-size:15px; padding-top:20px;" id="entrada2">
+                                    <span style="color:black;">{{a.descrição}}</span>
+                                </h6>
+
+                            </div>
+                        {% endfor %}
+
+                            <div class="post-heading" id="heading-students"> <!-- 2 2 2 2 2 2 2 2 2 2 2 2 -->
+                                <h6 class="text-muted time" style="text-align:center; font-size:21px; float: left; padding-left:100px;">{{turned_in}}<br>Turned in</h6>
+                                <h6 class="text-muted time" style="text-align:center; font-size:21px;">{{total}}<br>Assigned</h6>
+                            </div>
+
+                            <br><br>
+
+                            <div class="post-description apagado" id="desc-description"> <!-- 1 1 1 1 1 1 1 1 1 1 1 -->
+                              <br><br>
+                                {% for a in assigment %}
+                                    {% if a.pdf %}
+                                        <form action="/media/{{a.pdf}}" target="_blank">
+                                            <input class="btn btn-outline-info sm" style="float: left;" type="submit" value="View PDF" />
+                                        </form>
+                                        <a style="margin-left: 20px;" href="/media/{{a.pdf}}" download class="btn btn-outline-info">
+                                        Download PDF</a>
+                                    {% endif %}
+                                {% endfor %}
+                           </div>
+
+                           <div class="post-description" id="desc-students"> <!-- 2 2 2 2 2 2 2 2 2 2 2 2 -->
+                            <h6 class="text-muted time" style="font-size:16.5px;">Assigned</h6>
+
+                            <table class="table">
+                              <tbody>
+                                {% if students %}
+                                  {% for nome, iduser, status, pdf, data, nota, notaL in students %}
+                                    <tr>
+                                      <td><strong>{{nome}}</strong></td>
+                                      {% if status == 'Missed' %}
+                                        <td style="color:red;">{{status}}</td>
+                                      {% else %}
+                                        <td>{{status}}</td>
+                                      {% endif %}
+                                      {% if data %}
+                                        <td>{{data}}</td>
+                                      {% else %}
+                                        <td></td>
+                                      {% endif %}
+                                      {% if pdf %}
+                                        <td>
+                                          <form action="/media/{{pdf}}" target="_blank">
+                                            <input class="btn btn-info sm" style="float: left;" type="submit" value="Student work" />
+                                          </form>
+                                        </td>
+                                      {% else %}
+                                        <td></td>
+                                      {% endif %}
+                                      {% if nota %}
+                                        {% if nota >= 70 %}
+                                          <td class="sucesso notaATVs" value="{{nota}}">{{nota}}<br>"{{notaL}}"</td>
+                                        {% else %}
+                                          <td class="reprovado notaATV" value="{{nota}}">{{nota}}<br>"{{notaL}}"</td>
+                                        {% endif %}
+                                      {% else %}
+                                        <td><br></td>
+                                      {% endif %}
+                                      <td>
+                                        {% include 'eduworld/grade.html' %}
+                                        <div class="text-center">
+                                          <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modal-{{iduser}}">Grade</a>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  {% endfor %}
+                                {% endif %}
+                              </tbody>
+                            </table>
+                         </div>
+                        <br>
+
+                         <div class="post-footer" id="main-content-section">
+                            {% include 'eduworld/privatestudentscoment.html' %}
+                          </div>
+
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<style>
+  .apagado
+  {
+    display:none;
+  }
+  .sucesso
+  {
+    background-color:#C6EAC1;
+  }
+  .reprovado
+  {
+    background-color:#E5B2B8;
+  }
+</style>
+
+<script>
+  document.querySelector('#editarbtn').addEventListener('click', () => editarbtn());
+  document.querySelector('#cancelar').addEventListener('click', () => cancel());
+  function editarbtn()
+  {
+    document.getElementById("entrada2").classList.add("apagado");
+    document.getElementById("entrada1").classList.add("apagado");
+    document.getElementById("editform").classList.remove("apagado");
+  }
+  function cancel(event)
+  {
+    event.preventDefault()
+    document.getElementById("entrada2").classList.remove("apagado");
+    document.getElementById("entrada1").classList.remove("apagado");
+    document.getElementById("editform").classList.add("apagado");
+  }
+
+  $('#btneditar').click(function (e){
+  e.preventDefault();
+  console.log(this.value); // id do post a ser editado
+  let peca = this.value
+  let titulo = $(`#t`).val();
+  console.log(titulo); // novo titulo
+
+  let desc = $(`#d`).val();
+  console.log(desc); // novo desc
+
+  $.ajax({
+            type: 'POST',
+            url: `/editassignm`,
+            data: {
+                pk: parseInt(peca),
+                titulo: titulo,
+                desc: desc,
+                action: 'post'
+            },
+            success: function(data){
+              console.log('okay')
+              document.getElementById("entrada1").innerHTML = titulo;
+              document.getElementById("entrada2").innerHTML = desc;
+
+              document.getElementById("entrada2").classList.remove("apagado");
+              document.getElementById("entrada1").classList.remove("apagado");
+              document.getElementById("editform").classList.add("apagado");
+            }
+        });
+  });
+
+</script>
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'eduworld/newassig.js' %}"></script>
+{% endblock %}

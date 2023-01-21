@@ -1,0 +1,78 @@
+{% extends "eduworld/layoutLOG.html" %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'eduworld/styles.css' %}">
+
+{% block body %}
+
+  {% if message %}
+    <div class="alert alert-{{tipo}}" role="alert">
+      <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            {{ message }}
+      </div>
+  {% endif %}
+
+  <div class="container" style="padding-top:10px;">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            {% if not DONO %}
+            <img alt ="404" id="not_found" src="https://stories.freepiklabs.com/storage/42261/403-error-forbidden-rafiki-2844.png">
+            </div></div></div></div></div>
+            {% else %}
+              <div class="tab-content no-border padding-24">
+                <form method="POST" action="{% url 'editclass' pk %}">
+                    {% csrf_token %}
+
+            <table id="table">
+
+              {% for item in data %}
+                <div class="mb-3">
+                    <label class="small mb-1" for="inputEmailAddress">Class name</label>
+                    <input required type="text" name="classname" class="form-control" id="classname" value="{{item.name}}"></input>
+                </div>
+
+                <!-- Form Row-->
+                <div class="row gx-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="inputFirstName">Room</label>
+                        <input name="Room" class="form-control" id="Room" type="text" placeholder="Room" value="{{item.room}}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="inputLastName">Subject</label>
+                        <input name="Subject" class="form-control" id="Subject" type="text" placeholder="Subject" value="{{item.subject}}">
+                    </div>
+                </div>
+
+              {% endfor %}
+
+            </table>
+
+              <span class="float-right text-muted">
+                <input class="btn btn-primary" type="submit" value="Save changes" name="salvar"></input>
+              </span>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+    $(function() {
+      var input = $("#classname");
+    var len = input.val().length;
+    input[0].focus();
+    input[0].setSelectionRange(len, len);
+    });
+</script>
+
+{% endif %}
+{% endblock %}
+{% block script %}
+    <script src="{% static 'eduworld/script.js' %}"></script>
+{% endblock %}
